@@ -3,6 +3,16 @@ variable "count" {
   default = 1
 }
 
+variable "availability_zone" {
+  type    = "string"
+  default = ""
+}
+
+variable "region" {
+  type    = "string"
+  default = ""
+}
+
 variable "instance_name" {
   type    = "list"
   default = [""]

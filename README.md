@@ -11,17 +11,17 @@ Foram considerados os seguintes itens para a construção de volumes:
 ## Exemplos: 
 ### Definição de um volume para uma instância
 <pre>
-module "instance-vol" {
+module "frontend-vol" {
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "1"</b>
-  instance_id   = "${module.instance.id}"
-  instance_name = "${module.instance.name}"
+  instance_id   = "${module.frontend.id}"
+  instance_name = "${module.frontend.name}"
   size          = "10"
   
 }
 
-module "instance" {
+module "frontend-instance" {
   source        = "terraform-openstack-modules/instance/openstack"
   version       = "0.0.1"
   <b>count         = "1"</b>
@@ -31,21 +31,21 @@ module "instance" {
   key_pair      = "host-key"
   flavor        = "small-1"
   fixed_ip_v4   = ["192.168.0.10"]
-  secgroup_id   = ["${module.instance-sg.id}"]
+  secgroup_id   = ["${module.frontend-sg.id}"]
   env           = "hom"
   puppet_server = "puppet-master.localdomain"
   puppet_ip     = "172.16.15.30"
 }
 
-module "instance-sg" {
+module "frontend-sg" {
   source              = "terraform-openstack-modules/securitygroup/openstack"
   version             = "0.0.1"
   securitygroup_name  = "Instance - secgroup"
   securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = ${instance-rules-sg}
+  securitygroup_rules = ${frontend-rules-sg}
 }
 
-variable "instance-rules-sg" {
+variable "frontend-rules-sg" {
     default = [
       {
         port_range_min   = 22
@@ -68,17 +68,17 @@ variable "instance-rules-sg" {
  
  ### Definição de dois volumes para duas instâncias iguais
  <pre>
-module "instance-vol" {
+module "frontend-vol" {
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = "${module.instance.id}"
-  instance_name = "${module.instance.name}"
+  instance_id   = "${module.frontend-instance.id}"
+  instance_name = "${module.frontend-instance.name}"
   size          = "10"
   
 }
 
-module "instance" {
+module "frontend-instance" {
   source        = "terraform-openstack-modules/instance/openstack"
   version       = "0.0.1"
   <b>count         = "2"</b>
@@ -88,21 +88,21 @@ module "instance" {
   key_pair      = "host-key"
   flavor        = "small-1"
   fixed_ip_v4   = ["192.168.0.10"]
-  secgroup_id   = ["${module.instance-sg.id}"]
+  secgroup_id   = ["${module.frontend-sg.id}"]
   env           = "hom"
   puppet_server = "puppet-master.localdomain"
   puppet_ip     = "172.16.15.30"
 }
 
-module "instance-sg" {
+module "frontend-sg" {
   source              = "terraform-openstack-modules/securitygroup/openstack"
   version             = "0.0.1"
   securitygroup_name  = "Instance - secgroup"
   securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = ${instance-rules-sg}
+  securitygroup_rules = ${frontend-rules-sg}
 }
 
-variable "instance-rules-sg" {
+variable "frontend-rules-sg" {
     default = [
       {
         port_range_min   = 22
@@ -125,26 +125,26 @@ variable "instance-rules-sg" {
  
  ### Definição de dois volumes para duas instâncias distintas
  <pre>
-module "instance-frontend-vol" {
+module "frontend-vol" {
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = "${module.instance-frontend.id}"
-  instance_name = "${module.instance-frontend.name}"
+  instance_id   = "${module.frontend-instance.id}"
+  instance_name = "${module.frontend-instance.name}"
   size          = "10"
   
 }
 
-module "instance-backend-vol" {
+module "backend-vol" {
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = "${module.instance-backend.id}"
-  instance_name = "${module.instance-backend.name}"
+  instance_id   = "${module.backend-instance.id}"
+  instance_name = "${module.backend-instance.name}"
   size          = "10"
 }
 
-module "instance-frontend" {
+module "frontend-instance" {
   source        = "terraform-openstack-modules/instance/openstack"
   version       = "0.0.1"
   <b>count         = "2"</b>
@@ -154,13 +154,13 @@ module "instance-frontend" {
   key_pair      = "host-key"
   flavor        = "large-1"
   fixed_ip_v4   = ["192.168.0.10","192.168.0.11"]
-  secgroup_id   = ["${module.instance-sg.id}"]
+  secgroup_id   = ["${module.default-sg.id}"]
   env           = "hom"
   puppet_server = "puppet-master.localdomain"
   puppet_ip     = "172.16.15.30"
 }
 
-module "instance-backend" {
+module "backend-instance" {
   source        = "terraform-openstack-modules/instance/openstack"
   version       = "0.0.1"
   <b>count         = "2"</b>
@@ -176,15 +176,15 @@ module "instance-backend" {
   puppet_ip     = "172.16.15.30"
 }
 
-module "instance-sg" {
+module "default-sg" {
   source              = "terraform-openstack-modules/securitygroup/openstack"
   version             = "0.0.1"
   securitygroup_name  = "Instance - secgroup"
   securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = ${instance-rules-sg}
+  securitygroup_rules = ${default-rules-sg}
 }
 
-variable "instance-rules-sg" {
+variable "default-rules-sg" {
     default = [
       {
         port_range_min   = 22

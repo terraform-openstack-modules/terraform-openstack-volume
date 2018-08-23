@@ -21,34 +21,35 @@ Foram considerados os seguintes itens para a construção de volumes:
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "1"</b>
-  instance_id   = <b>"${module.frontend.id}"</b>
-  instance_name = <b>"${module.frontend.name}"</b>
+  <b>instance_id   = "${module.frontend.id}"</b>
+  <b>instance_name = "${module.frontend.name}"</b>
   size          = "10"
   
 }
 
 <b>module "frontend-instance"</b> {
-  source        = "terraform-openstack-modules/instance/openstack"
-  version       = "0.0.1"
-  <b>count         = "1"</b>
-  hostname      = "frontend-srv"
-  dns           = "localdomain"
-  network       = "privatenetwork"
-  key_pair      = "host-key"
-  flavor        = "small-1"
-  fixed_ip_v4   = ["192.168.0.10"]
-  secgroup_id   = <b>["${module.frontend-sg.id}"]</b>
-  env           = "hom"
-  puppet_server = "puppet-master.localdomain"
-  puppet_ip     = "172.16.15.30"
+  source            = "terraform-openstack-modules/instance/openstack"
+  version           = "0.0.3"
+  <b>count             = "1"</b>
+  hostname          = "frontend-srv"
+  availability_zone = ["zone-decimo"]
+  dns               = "localdomain"
+  network           = "privatenetwork"
+  key_pair          = "host-key"
+  flavor            = "small-1"
+  fixed_ip_v4       = ["192.168.0.10"]
+  <b>secgroup_id       = ["${module.frontend-sg.id}"]</b>
+  env               = "hom"
+  puppet_server     = "puppet-master.localdomain"
+  puppet_ip         = "172.16.15.30"
 }
 
 <b>module "frontend-sg"</b> {
-  source              = "terraform-openstack-modules/securitygroup/openstack"
-  version             = "0.0.1"
-  securitygroup_name  = "Instance - secgroup"
-  securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = <b>"${frontend-rules-sg}"</b>
+  source      = "terraform-openstack-modules/securitygroup/openstack"
+  version     = "0.0.2"
+  name        = "Instance - secgroup"
+  description = "Instance security group project"
+  <b>rules       = "${frontend-rules-sg}"</b>
 }
 
 <b>variable "frontend-rules-sg"</b> {
@@ -80,34 +81,35 @@ Foram considerados os seguintes itens para a construção de volumes:
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = <b>"${module.frontend-instance.id}"</b>
-  instance_name = <b>"${module.frontend-instance.name}"</b>
+  <b>instance_id   = "${module.frontend-instance.id}"</b>
+  <b>instance_name = "${module.frontend-instance.name}"</b>
   size          = "10"
   
 }
 
 <b>module "frontend-instance"</b> {
-  source        = "terraform-openstack-modules/instance/openstack"
-  version       = "0.0.1"
-  <b>count         = "2"</b>
-  hostname      = "frontend-srv"
-  dns           = "localdomain"
-  network       = "privatenetwork"
-  key_pair      = "host-key"
-  flavor        = "small-1"
-  fixed_ip_v4   = ["192.168.0.10"]
-  secgroup_id   = <b>["${module.frontend-sg.id}"]</b>
-  env           = "hom"
-  puppet_server = "puppet-master.localdomain"
-  puppet_ip     = "172.16.15.30"
+  source            = "terraform-openstack-modules/instance/openstack"
+  version           = "0.0.3"
+  <b>count             = "2"</b>
+  availability_zone = ["zone-decimo","zone-oitavo"]
+  hostname          = "frontend-srv"
+  dns               = "localdomain"
+  network           = "privatenetwork"
+  key_pair          = "host-key"
+  flavor            = "small-1"
+  fixed_ip_v4       = ["192.168.0.10"]
+  <b>secgroup_id       = ["${module.frontend-sg.id}"]</b>
+  env               = "hom"
+  puppet_server     = "puppet-master.localdomain"
+  puppet_ip         = "172.16.15.30"
 }
 
 <b>module "frontend-sg"</b> {
-  source              = "terraform-openstack-modules/securitygroup/openstack"
-  version             = "0.0.1"
-  securitygroup_name  = "Instance - secgroup"
-  securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = <b>"${frontend-rules-sg}"</b>
+  source      = "terraform-openstack-modules/securitygroup/openstack"
+  version     = "0.0.2"
+  name        = "Instance - secgroup"
+  description = "Instance security group project"
+  <b>rules       = "${frontend-rules-sg}"</b>
 }
 
 <b>variable "frontend-rules-sg"</b> {
@@ -139,8 +141,8 @@ Foram considerados os seguintes itens para a construção de volumes:
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = <b>"${module.frontend-instance.id}"</b>
-  instance_name = <b>"${module.frontend-instance.name}"</b>
+  <b>instance_id   = "${module.frontend-instance.id}"</b>
+  <b>instance_name = "${module.frontend-instance.name}"</b>
   size          = "10"
   
 }
@@ -149,49 +151,51 @@ Foram considerados os seguintes itens para a construção de volumes:
   source        = "terraform-openstack-modules/volume/openstack"
   version       = "0.0.1"
   <b>count         = "4"</b>
-  instance_id   = <b>"${module.backend-instance.id}"</b>
-  instance_name = <b>"${module.backend-instance.name}"</b>
+  <b>instance_id   = "${module.backend-instance.id}"</b>
+  <b>instance_name = "${module.backend-instance.name}"</b>
   size          = "10"
 }
 
 <b>module "frontend-instance"</b> {
-  source        = "terraform-openstack-modules/instance/openstack"
-  version       = "0.0.1"
-  <b>count         = "2"</b>
-  hostname      = "frontend-srv"
-  dns           = "localdomain"
-  network       = "privatenetwork"
-  key_pair      = "host-key"
-  flavor        = "large-1"
-  fixed_ip_v4   = ["192.168.0.10","192.168.0.11"]
-  secgroup_id   = <b>["${module.default-sg.id}"]</b>
-  env           = "hom"
-  puppet_server = "puppet-master.localdomain"
-  puppet_ip     = "172.16.15.30"
+  source            = "terraform-openstack-modules/instance/openstack"
+  version           = "0.0.3"
+  <b>count             = "2"</b>  
+  availability_zone = ["zone-decimo","zone-oitavo"]
+  hostname          = "frontend-srv"
+  dns               = "localdomain"
+  network           = "privatenetwork"
+  key_pair          = "host-key"
+  flavor            = "large-1"
+  fixed_ip_v4       = ["192.168.0.10","192.168.0.11"]
+  <b>secgroup_id       = ["${module.default-sg.id}"]</b>
+  env               = "hom"
+  puppet_server     = "puppet-master.localdomain"
+  puppet_ip         = "172.16.15.30"
 }
 
 <b>module "backend-instance"</b> {
-  source        = "terraform-openstack-modules/instance/openstack"
-  version       = "0.0.1"
-  <b>count         = "2"</b>
-  hostname      = "backend-srv"
-  dns           = "localdomain"
-  network       = "privatenetwork"
-  key_pair      = "host-key"
-  flavor        = "medium-1"
-  fixed_ip_v4   = ["192.168.0.12","192.168.0.13"]
-  secgroup_id   = <b>["${module.instance-sg.id}"]</b>
-  env           = "hom"
-  puppet_server = "puppet-master.localdomain"
-  puppet_ip     = "172.16.15.30"
+  source            = "terraform-openstack-modules/instance/openstack"
+  version           = "0.0.3"
+  <b>count             = "2"</b>
+  availability_zone = ["zone-decimo","zone-oitavo"]
+  hostname          = "backend-srv"
+  dns               = "localdomain"
+  network           = "privatenetwork"
+  key_pair          = "host-key"
+  flavor            = "medium-1"
+  fixed_ip_v4       = ["192.168.0.12","192.168.0.13"]
+  <b>secgroup_id       = ["${module.instance-sg.id}"]</b>
+  env               = "hom"
+  puppet_server     = "puppet-master.localdomain"
+  puppet_ip         = "172.16.15.30"
 }
 
 <b>module "default-sg"</b> {
-  source              = "terraform-openstack-modules/securitygroup/openstack"
-  version             = "0.0.1"
-  securitygroup_name  = "Instance - secgroup"
-  securitygroup_desc  = "Instance security group project"
-  securitygroup_rules = <b>"${default-rules-sg}"</b>
+  source      = "terraform-openstack-modules/securitygroup/openstack"
+  version     = "0.0.2"
+  name        = "Instance - secgroup"
+  description = "Instance security group project"
+  <b>rules       = "${default-rules-sg}"</b>
 }
 
 <b>variable "default-rules-sg"</b> {
